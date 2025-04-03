@@ -183,6 +183,11 @@ contract BlueprintCore is EIP712, Payment {
         _;
     }
 
+    modifier isTrustedWorker() {
+        require(trustWorkerMp[msg.sender], "Worker is not trusted");
+        _;
+    }
+
     function setProjectId(bytes32 projectId, address userAddr) internal newProject(projectId) {
         require(userAddr != dummyAddress, "Invalid userAddr");
 
@@ -303,6 +308,9 @@ contract BlueprintCore is EIP712, Payment {
         projects[projectId].requestDeploymentID = projectDeploymentId;
 
         deploymentIdList[projectDeploymentId].push(requestID);
+
+        // add requestID to projectID mapping
+        requestIDToProjectID[requestID] = projectId;
 
         if (workerAddress == dummyAddress) {
             emit RequestDeployment(projectId, userAddress, dummyAddress, requestID, base64Proposal, serverURL);
