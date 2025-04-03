@@ -185,6 +185,11 @@ contract BlueprintCore is EIP712, Payment {
         _;
     }
 
+    modifier isTrustedWorker() {
+        require(trustWorkerMp[msg.sender], "Worker is not trusted");
+        _;
+    }
+
     function setProjectId(bytes32 projectId, address userAddr) internal newProject(projectId) {
         require(userAddr != dummyAddress, "Invalid userAddr");
 
